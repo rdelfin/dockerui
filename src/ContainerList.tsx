@@ -54,7 +54,6 @@ class ContainerList extends React.Component<Props, State> {
 
                 res.setEncoding("utf8");
                 res.on("data", (data) => {
-                    console.log("Got data " + data);
                     this.setState({
                         containers: JSON.parse(data),
                     });
