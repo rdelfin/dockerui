@@ -22,60 +22,91 @@ const styles = (theme: Theme) => ({
 });
 
 interface Container {
-    Id: string;
-    Names: Array<string>;
+    id: string;
+    name: string;
     command: string;
-    stat: string;
-    state: string;
 }
 
 interface Props extends WithStyles<typeof styles> {}
 interface State {
-    containers: Array<Container>;
+    containers: Record<string, Array<Container>>;
+    hosts: Array<string>;
 }
 
 class ContainerList extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
-        this.state = { containers: [] };
+        this.state = {
+            containers: {},
+            hosts: [
+                "bernal.rdelfin.net",
+                "tepozteco.rdelfin.net",
+                "paricutin.rdelfin.net",
+                "malinche.rdelfin.net",
+            ],
+        };
     }
 
     componentDidMount() {
-        http.get(
-            {
-                socketPath: "/var/run/docker.sock",
-                path: "/v1.40/containers/json",
-            },
-            (res) => {
-                if (res.statusCode !== 200) {
-                    console.log("Error getting containers: " + res);
-                    return;
-                }
+        Promise.all(
+            this.state.hosts.map((host) => {
+                return fetch("/agent/" + host + "/docker/list")
+                    .then((res) => {
+                        if (!res.ok) {
+                            throw res;
+                        }
+                        return res.json() as Promise<Array<Container>>;
+                    })
+                    .then((json) => {
+                        return [host, json];
+                    })
+                    .catch((error) =>
+                        console.log(
+                            "Error fetching docker list for " +
+                                host +
+                                ": " +
+                                error
+                        )
+                    );
+            })
+        ).then((container_list) => {
+            let container_map: Record<string, Array<Container>> = {};
 
-                res.setEncoding("utf8");
-                res.on("data", (data) => {
-                    this.setState({
-                        containers: JSON.parse(data),
-                    });
-                });
-                res.on("error", (error) => console.log(error));
-            }
-        );
+            container_list.forEach((pair) => {
+                if (pair !== undefined) {
+                    const host = pair[0] as string;
+                    const containers = pair[1] as Array<Container>;
+                    container_map[host] = containers;
+                }
+            });
+
+            this.setState({
+                containers: container_map,
+            });
+        });
     }
 
     render() {
         const { classes } = this.props;
 
+        let containers: Array<[string, Container]> = [];
+
+        for (let hostname in this.state.containers) {
+            this.state.containers[hostname].forEach((container) => {
+                containers.push([hostname, container]);
+            });
+        }
+
         return (
             <Grid container className={classes.root} spacing={2}>
                 <Grid item xs={12}>
                     <Grid container justify="center" spacing={5}>
-                        {this.state.containers.map((value) => (
-                            <Grid key={value.Id} item>
+                        {containers.map((value) => (
+                            <Grid key={value[1].id} item>
                                 <ContainerCard
-                                    id={value.Id}
-                                    name=""
-                                    command=""
+                                    id={value[1].id}
+                                    name={value[1].name}
+                                    command={value[1].command}
                                     stat=""
                                 />
                             </Grid>
