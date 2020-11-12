@@ -57,9 +57,7 @@ class ContainerList extends React.Component<Props, State> {
                         }
                         return res.json() as Promise<Array<Container>>;
                     })
-                    .then((json) => {
-                        return [host, json];
-                    })
+                    .then((json) => [host, json])
                     .catch((error) =>
                         console.log(
                             "Error fetching docker list for " +
@@ -69,21 +67,25 @@ class ContainerList extends React.Component<Props, State> {
                         )
                     );
             })
-        ).then((container_list) => {
-            let container_map: Record<string, Array<Container>> = {};
+        )
+            .then((container_list) => {
+                let container_map: Record<string, Array<Container>> = {};
 
-            container_list.forEach((pair) => {
-                if (pair !== undefined) {
-                    const host = pair[0] as string;
-                    const containers = pair[1] as Array<Container>;
-                    container_map[host] = containers;
-                }
-            });
+                container_list.forEach((pair) => {
+                    if (pair !== undefined) {
+                        const host = pair[0] as string;
+                        const containers = pair[1] as Array<Container>;
+                        container_map[host] = containers;
+                    }
+                });
 
-            this.setState({
-                containers: container_map,
-            });
-        });
+                this.setState({
+                    containers: container_map,
+                });
+            })
+            .catch((error) =>
+                console.log("Error fetching docker list for hosts: " + error)
+            );
     }
 
     render() {
