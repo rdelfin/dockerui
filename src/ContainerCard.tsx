@@ -28,14 +28,18 @@ interface Props extends WithStyles<typeof styles> {
     command: string;
     id: string;
     stat: string;
+    host: string;
 }
 
 function ContainerCard(props: Props) {
-    const { classes, name, command } = props;
+    const { classes, name, command, host } = props;
 
     return (
         <Card className={classes.root}>
             <CardContent>
+                <Typography variant="body2" component="p">
+                    {host}
+                </Typography>
                 <Typography variant="h5" component="h2">
                     {name}
                 </Typography>

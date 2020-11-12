@@ -109,6 +109,7 @@ class ContainerList extends React.Component<Props, State> {
                                     id={value[1].id}
                                     name={value[1].name}
                                     command={value[1].command}
+                                    host={value[0]}
                                     stat=""
                                 />
                             </Grid>
