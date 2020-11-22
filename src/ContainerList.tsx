@@ -6,7 +6,6 @@ import React from "react";
 import { WithStyles, withStyles, Theme } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import ContainerCard from "./ContainerCard";
-import http from "http";
 
 const styles = (theme: Theme) => ({
     root: {

@@ -32,7 +32,7 @@ interface Props extends WithStyles<typeof styles> {
 }
 
 function ContainerCard(props: Props) {
-    const { classes, name, command, host } = props;
+    const { classes, name, host } = props;
 
     return (
         <Card className={classes.root}>
@@ -42,9 +42,6 @@ function ContainerCard(props: Props) {
                 </Typography>
                 <Typography variant="h5" component="h2">
                     {name}
-                </Typography>
-                <Typography variant="body2" component="p">
-                    CMD: {command}
                 </Typography>
             </CardContent>
 
