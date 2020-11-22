@@ -3,13 +3,13 @@
  */
 
 import React from "react";
-import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { withStyles, WithStyles, createStyles } from "@material-ui/core/styles";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
+import ContainerDetails from "./ContainerDetails";
 
 const styles = createStyles({
     root: {
@@ -48,7 +48,13 @@ function ContainerCard(props: Props) {
                 </CardContent>
 
                 <CardActions className={classes.bottom_action}>
-                    <Button size="small">More</Button>
+                    <ContainerDetails
+                        name={props.name}
+                        command={props.command}
+                        id={props.id}
+                        stat={props.stat}
+                        host={props.host}
+                    />
                 </CardActions>
             </Card>
         </Grid>
