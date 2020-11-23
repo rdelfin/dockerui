@@ -1,15 +1,20 @@
-FROM node:14.15.1 AS builder
+# pull official base image
+FROM node:13.12.0-alpine
 
-WORKDIR /opt/web
-COPY package.json package-lock.json ./
-RUN npm install
+# set working directory
+WORKDIR /app
 
-ENV PATH="./node_modules/.bin:$PATH"
+# add `/app/node_modules/.bin` to $PATH
+ENV PATH /app/node_modules/.bin:$PATH
 
+# install app dependencies
+COPY package.json ./
+COPY package-lock.json ./
+RUN npm install --silent
+RUN npm install react-scripts@3.4.1 -g --silent
+
+# add app
 COPY . ./
-RUN npm run build
 
-FROM nginx:1.19-alpine
-COPY ./nginx.config /etc/nginx/nginx.template
-CMD ["/bin/sh", "-c", "envsubst '$PORT' < /etc/nginx/nginx.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"]
-COPY --from=builder /opt/web/build /usr/share/nginx/html
+# start app
+CMD ["npm", "start"]
