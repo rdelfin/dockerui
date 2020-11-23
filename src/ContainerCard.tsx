@@ -28,7 +28,8 @@ interface Props extends WithStyles<typeof styles> {
     name: string;
     command: string;
     id: string;
-    stat: string;
+    state: string;
+    status: string;
     host: string;
 }
 
@@ -52,7 +53,8 @@ function ContainerCard(props: Props) {
                         name={props.name}
                         command={props.command}
                         id={props.id}
-                        stat={props.stat}
+                        status={props.status}
+                        state={props.state}
                         host={props.host}
                     />
                 </CardActions>

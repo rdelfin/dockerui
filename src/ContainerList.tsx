@@ -24,6 +24,8 @@ interface Container {
     id: string;
     name: string;
     command: string;
+    status: string;
+    state: string;
 }
 
 interface Props extends WithStyles<typeof styles> {}
@@ -109,7 +111,8 @@ class ContainerList extends React.Component<Props, State> {
                                     name={value[1].name}
                                     command={value[1].command}
                                     host={value[0]}
-                                    stat=""
+                                    status={value[1].status}
+                                    state={value[1].state}
                                 />
                             </Grid>
                         ))}
